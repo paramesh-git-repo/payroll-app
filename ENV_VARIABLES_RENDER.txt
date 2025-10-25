@@ -12,8 +12,8 @@ Copy and paste these into Render Dashboard → Backend Service → Environment
 ┌─ DATABASE CONFIGURATION ─────────────────────────────────────────────────┐
 │                                                                            │
 │  Variable: MONGODB_URI                                                    │
-│  Value: mongodb+srv://USERNAME:PASSWORD@cluster.mongodb.net/payroll-app? │
-│         retryWrites=true&w=majority                                       │
+│  Value: mongodb+srv://payroll-admin:tjQR02Mq6Lpdi8O3@cluster0.gpmyoiu.  │
+│         mongodb.net/payroll?retryWrites=true&w=majority                   │
 │                                                                            │
 │  📝 Get this from MongoDB Atlas → Connect → Connect your application     │
 │  ⚠️  Replace USERNAME and PASSWORD with your actual credentials          │
