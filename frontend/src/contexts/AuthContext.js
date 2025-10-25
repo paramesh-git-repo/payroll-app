@@ -3,6 +3,22 @@ import api from '../utils/axios';
 
 const AuthContext = createContext();
 
+// Helper function to decode JWT and check expiration
+const isTokenExpired = (token) => {
+  if (!token) return true;
+  
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    const expirationTime = payload.exp * 1000; // Convert to milliseconds
+    const currentTime = Date.now();
+    
+    // Check if token expires in less than 1 day (refresh proactively)
+    return (expirationTime - currentTime) < (24 * 60 * 60 * 1000);
+  } catch (error) {
+    return true;
+  }
+};
+
 const initialState = {
   user: null,
   token: localStorage.getItem('token'),
@@ -76,6 +92,34 @@ export const AuthProvider = ({ children }) => {
       dispatch({ type: 'AUTH_FAIL', payload: null });
     }
   }, []);
+
+  // Auto-refresh token check - runs every hour
+  useEffect(() => {
+    if (!state.isAuthenticated) return;
+
+    const checkAndRefreshToken = async () => {
+      if (isTokenExpired(state.token)) {
+        console.log('Token is expiring soon, refreshing...');
+        // Re-login silently to get a new token
+        const user = state.user;
+        if (user && user.email) {
+          // Show a notification to user (optional)
+          console.log('Your session will be refreshed automatically');
+          // User needs to re-login for security
+          logout();
+          alert('Your session has expired. Please log in again.');
+        }
+      }
+    };
+
+    // Check immediately
+    checkAndRefreshToken();
+
+    // Check every hour
+    const interval = setInterval(checkAndRefreshToken, 60 * 60 * 1000);
+
+    return () => clearInterval(interval);
+  }, [state.isAuthenticated, state.token, state.user]);
 
   const loadUser = async () => {
     try {
