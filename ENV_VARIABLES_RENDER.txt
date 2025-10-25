@@ -70,11 +70,11 @@ Copy and paste these into Render Dashboard → Backend Service → Environment
 ┌─ URL CONFIGURATION ───────────────────────────────────────────────────────┐
 │                                                                            │
 │  Variable: FRONTEND_URL                                                   │
-│  Value: https://payroll-frontend.onrender.com                            │
+│  Value: https://axess-payroll-app.netlify.app                            │
 │  ⚠️  Update after deploying frontend                                      │
 │                                                                            │
 │  Variable: CORS_ORIGIN                                                    │
-│  Value: https://payroll-frontend.onrender.com                            │
+│  Value: https://axess-payroll-app.netlify.app                            │
 │  ⚠️  Update after deploying frontend                                      │
 │                                                                            │
 └───────────────────────────────────────────────────────────────────────────┘

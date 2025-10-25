@@ -6,8 +6,17 @@ require('dotenv').config({ path: './config.env' });
 
 const app = express();
 
+// CORS configuration
+const corsOptions = {
+  origin: process.env.NODE_ENV === 'production' 
+    ? ['https://axess-payroll-app.netlify.app', 'https://awesome-payroll-app.netlify.app']
+    : ['http://localhost:3000', 'http://localhost:3001'],
+  credentials: true,
+  optionsSuccessStatus: 200
+};
+
 // Middleware
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
