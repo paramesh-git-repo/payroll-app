@@ -1,0 +1,27 @@
+{
+  "name": "payroll-app",
+  "version": "1.0.0",
+  "description": "MERN Stack Payroll Management Application",
+  "scripts": {
+    "start": "cd backend && npm start",
+    "dev": "concurrently \"npm run backend\" \"npm run frontend\"",
+    "backend": "cd backend && npm run dev",
+    "frontend": "cd frontend && npm start",
+    "build": "cd frontend && npm run build",
+    "install-all": "npm install && cd backend && npm install && cd ../frontend && npm install",
+    "heroku-postbuild": "cd backend && npm install && cd ../frontend && npm install && npm run build",
+    "start-all": "./start.sh",
+    "stop": "lsof -ti:3000,5001 | xargs kill -9 2>/dev/null || true"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.0"
+  },
+  "keywords": [
+    "payroll",
+    "mern",
+    "salary",
+    "management"
+  ],
+  "author": "Your Name",
+  "license": "MIT"
+}

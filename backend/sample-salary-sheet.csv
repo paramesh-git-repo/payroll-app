@@ -1,0 +1,11 @@
+name,email,employeecode,department,designation,salary,paiddays,leaves
+Alice Johnson,alice.johnson@company.com,AJ1001,Engineering,Senior Developer,55000,30,0
+Bob Smith,bob.smith@company.com,BS1002,Marketing,Marketing Specialist,45000,28,2
+Carol Davis,carol.davis@company.com,CD1003,HR,HR Coordinator,38000,30,0
+David Wilson,david.wilson@company.com,DW1004,Finance,Financial Analyst,42000,29,1
+Eva Brown,eva.brown@company.com,EB1005,Sales,Sales Representative,35000,25,5
+Frank Miller,frank.miller@company.com,FM1006,IT,IT Support Specialist,40000,30,0
+Grace Taylor,grace.taylor@company.com,GT1007,Operations,Operations Coordinator,36000,30,0
+Henry Anderson,henry.anderson@company.com,HA1008,Customer Support,Support Agent,32000,27,3
+Ivy Garcia,ivy.garcia@company.com,IG1009,Legal,Legal Assistant,45000,30,0
+Jack Martinez,jack.martinez@company.com,JM1010,Research & Development,Research Analyst,50000,30,0

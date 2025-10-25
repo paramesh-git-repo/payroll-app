@@ -1,0 +1,11 @@
+name,email,employeecode,department,designation,salary,phone,joiningdate,isactive,paiddays,leaves
+John Doe,john.doe@company.com,JD1234,Engineering,Software Developer,50000,9876543210,2024-01-15,true,30,0
+Jane Smith,jane.smith@company.com,JS5678,Marketing,Marketing Manager,45000,9876543211,2024-02-01,true,30,1
+Mike Johnson,mike.johnson@company.com,MJ9012,HR,HR Manager,40000,9876543212,2024-01-20,true,28,2
+Sarah Wilson,sarah.wilson@company.com,SW3456,Finance,Accountant,35000,9876543213,2024-03-01,true,30,0
+David Brown,david.brown@company.com,DB7890,Sales,Sales Executive,30000,9876543214,2024-02-15,true,25,5
+Lisa Davis,lisa.davis@company.com,LD2468,IT,System Administrator,42000,9876543215,2024-01-10,true,30,0
+Robert Wilson,robert.wilson@company.com,RW1357,Operations,Operations Manager,48000,9876543216,2024-02-20,true,29,1
+Maria Garcia,maria.garcia@company.com,MG9753,Customer Support,Customer Support Lead,32000,9876543217,2024-03-15,true,30,0
+James Anderson,james.anderson@company.com,JA8642,Legal,Legal Counsel,55000,9876543218,2024-01-05,true,30,0
+Emily Taylor,emily.taylor@company.com,ET7531,Research & Development,Research Scientist,60000,9876543219,2024-02-10,true,27,3
