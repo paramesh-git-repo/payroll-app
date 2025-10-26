@@ -1,0 +1,96 @@
+╔════════════════════════════════════════════════════════════════════════════╗
+║                  RAILWAY ENVIRONMENT VARIABLES                             ║
+║                     Payroll Management System - MERN Stack                 ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📋 RAILWAY ENVIRONMENT VARIABLES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Go to: Railway Dashboard → Your Service → Variables → Add
+
+Copy and paste these EXACT variables:
+
+┌───────────────────────────────────────────────────────────────────────────┐
+│ NODE_ENV                                                                   │
+│ Value: production                                                         │
+└───────────────────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────────────────┐
+│ PORT                                                                       │
+│ Value: 5001                                                                │
+└───────────────────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────────────────┐
+│ MONGODB_URI                                                               │
+│ Value: mongodb+srv://payroll-admin:tjQR02Mq6Lpdi8O3@cluster0.gpmyoiu.       │
+│        mongodb.net/payroll?retryWrites=true&w=majority                    │
+└───────────────────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────────────────┐
+│ JWT_SECRET                                                                 │
+│ Value: 16ce3029ff146f1d21f5515fa8d854f0d978d8c689f11935fcf85f9ae3885fbd   │
+└───────────────────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────────────────┐
+│ JWT_EXPIRE                                                                 │
+│ Value: 7d                                                                  │
+└───────────────────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────────────────┐
+│ GMAIL_USER                                                                 │
+│ Value: parameshk@v-accel.ai                                               │
+└───────────────────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────────────────┐
+│ GMAIL_PASS                                                                 │
+│ Value: twszxngdwxdogjlx                                                   │
+└───────────────────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────────────────┐
+│ EMAIL_FROM_NAME                                                            │
+│ Value: AXESS & V-ACCEL Payroll System                                    │
+└───────────────────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────────────────┐
+│ FRONTEND_URL                                                               │
+│ Value: https://axess-payroll-app.netlify.app                             │
+└───────────────────────────────────────────────────────────────────────────┘
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🚀 QUICK DEPLOYMENT CHECKLIST
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+[ ] 1. Go to https://railway.app
+[ ] 2. Sign up/Login with GitHub
+[ ] 3. Click "New Project" → "Deploy from GitHub repo"
+[ ] 4. Select: paramesh-git-repo/payroll-app
+[ ] 5. Set Root Directory to: backend
+[ ] 6. Add all environment variables above
+[ ] 7. Deploy!
+[ ] 8. Copy Railway URL (e.g., https://payroll-production.railway.app)
+[ ] 9. Update Netlify REACT_APP_API_URL with Railway URL
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✅ VERIFICATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+After deployment:
+  • Visit your Railway URL
+  • Should see: {"success":true,"message":"Payroll Backend API is running!",...}
+  • Check logs for: "MongoDB connected successfully"
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🔗 USEFUL LINKS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Railway Dashboard:  https://railway.app
+MongoDB Atlas:     https://cloud.mongodb.com
+Netlify:           https://app.netlify.com
+Gmail App Passwords: https://myaccount.google.com/apppasswords
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Last Updated: October 26, 2025
+Repository: https://github.com/paramesh-git-repo/payroll-app
+
