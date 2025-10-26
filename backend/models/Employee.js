@@ -120,6 +120,13 @@ const employeeSchema = new mongoose.Schema({
   }
 });
 
+// Add indexes for faster queries
+employeeSchema.index({ employeeCode: 1 });
+employeeSchema.index({ email: 1 });
+employeeSchema.index({ department: 1 });
+employeeSchema.index({ isActive: 1 });
+employeeSchema.index({ createdAt: -1 });
+
 // Calculate salary components before saving
 employeeSchema.pre('save', function(next) {
   this.calculateSalaryComponents();

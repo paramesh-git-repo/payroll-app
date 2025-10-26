@@ -48,12 +48,16 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
-// Database connection
+// Database connection with optimized settings
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/payroll_app', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  serverSelectionTimeoutMS: 5000, // Keep trying to send operations for 5 seconds
-  socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
+  serverSelectionTimeoutMS: 5000,
+  socketTimeoutMS: 45000,
+  maxPoolSize: 10, // Maintain up to 10 socket connections
+  minPoolSize: 2, // Maintain at least 2 socket connections
+  maxIdleTimeMS: 30000, // Close connections after 30 seconds of inactivity
+  connectTimeoutMS: 10000 // Give up initial connection after 10 seconds
 })
 .then(() => console.log('MongoDB connected successfully'))
 .catch(err => {
