@@ -1,10 +1,14 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const compression = require('compression');
 const path = require('path');
 require('dotenv').config({ path: './config.env' });
 
 const app = express();
+
+// Compression middleware - reduces response size by 60-80%
+app.use(compression());
 
 // CORS configuration
 const corsOptions = {

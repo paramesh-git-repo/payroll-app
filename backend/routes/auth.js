@@ -108,6 +108,7 @@ router.post('/login', [
   body('email').isEmail().normalizeEmail().withMessage('Please provide a valid email'),
   body('password').notEmpty().withMessage('Password is required')
 ], async (req, res) => {
+  console.time('login');
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -150,6 +151,9 @@ router.post('/login', [
 
     // Generate token
     const token = generateToken(user._id);
+    
+    console.timeEnd('login');
+    console.log('✅ Login successful for:', email);
 
     res.json({
       success: true,
@@ -164,7 +168,8 @@ router.post('/login', [
       }
     });
   } catch (error) {
-    console.error('Login error:', error);
+    console.timeEnd('login');
+    console.error('❌ Login error:', error);
     res.status(500).json({
       success: false,
       message: 'Server error during login'
