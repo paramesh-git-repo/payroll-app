@@ -29,6 +29,16 @@ app.use('/api/salary', require('./routes/salary'));
 app.use('/api/payments', require('./routes/payments'));
 app.use('/api/attendance', require('./routes/attendance'));
 
+// Root route for testing
+app.get('/', (req, res) => {
+  res.json({ 
+    success: true, 
+    message: 'Payroll Backend API is running!',
+    environment: process.env.NODE_ENV || 'development',
+    mongodb: 'Connected'
+  });
+});
+
 // Serve static files from React app in production
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, 'client/build')));
