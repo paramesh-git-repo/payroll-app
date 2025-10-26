@@ -8,16 +8,23 @@ require('dotenv').config({ path: './config.env' });
 const app = express();
 
 // CORS must be FIRST to handle preflight requests
+// Determine origin based on environment
+const allowedOrigin = process.env.NODE_ENV === 'production'
+  ? 'https://axess-payroll-app.netlify.app'
+  : ['http://localhost:3000', 'http://localhost:3001'];
+
 const corsOptions = {
-  origin: process.env.NODE_ENV === 'production' 
-    ? 'https://axess-payroll-app.netlify.app'
-    : ['http://localhost:3000', 'http://localhost:3001'],
+  origin: allowedOrigin,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 };
 
+// Apply CORS
 app.use(cors(corsOptions));
+
+// Explicitly handle OPTIONS requests (preflight)
+app.options('*', cors(corsOptions));
 
 // Debug CORS configuration
 console.log('🔒 CORS Configuration:');
