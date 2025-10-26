@@ -7,29 +7,27 @@ require('dotenv').config({ path: './config.env' });
 
 const app = express();
 
-// Compression middleware - reduces response size by 60-80%
-app.use(compression());
-
-// CORS configuration
+// CORS must be FIRST to handle preflight requests
 const corsOptions = {
   origin: process.env.NODE_ENV === 'production' 
     ? 'https://axess-payroll-app.netlify.app'
-    : process.env.CORS_ORIGIN || ['http://localhost:3000', 'http://localhost:3001'],
+    : ['http://localhost:3000', 'http://localhost:3001'],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  optionsSuccessStatus: 200
+  allowedHeaders: ['Content-Type', 'Authorization']
 };
 
-// Middleware
 app.use(cors(corsOptions));
 
 // Debug CORS configuration
-if (process.env.NODE_ENV === 'production') {
-  console.log('🔒 CORS Configuration (Production):');
-  console.log('Allowed origins:', corsOptions.origin);
-}
+console.log('🔒 CORS Configuration:');
+console.log('Environment:', process.env.NODE_ENV || 'development');
+console.log('Allowed origin:', corsOptions.origin);
 
+// Compression middleware - reduces response size by 60-80%
+app.use(compression());
+
+// Parse JSON and URL-encoded bodies
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
