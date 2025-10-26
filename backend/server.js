@@ -13,14 +13,12 @@ app.use(compression());
 // CORS configuration
 const corsOptions = {
   origin: process.env.NODE_ENV === 'production' 
-    ? ['https://axess-payroll-app.netlify.app', 'https://awesome-payroll-app.netlify.app']
-    : process.env.CORS_ORIGIN // Allow custom origin from env
-      ? process.env.CORS_ORIGIN.split(',')
-      : ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:5001'],
+    ? 'https://axess-payroll-app.netlify.app'
+    : process.env.CORS_ORIGIN || ['http://localhost:3000', 'http://localhost:3001'],
   credentials: true,
-  optionsSuccessStatus: 200,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  optionsSuccessStatus: 200
 };
 
 // Middleware
