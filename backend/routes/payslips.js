@@ -385,11 +385,10 @@ router.get('/:id/pdf', protect, async (req, res) => {
         '--no-sandbox',
         '--disable-setuid-sandbox',
         '--disable-dev-shm-usage',
-        '--disable-accelerated-2d-canvas',
-        '--disable-gpu'
+        '--single-process',
+        '--no-zygote'
       ],
-      timeout: 30000, // 30 second timeout for launch
-      executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined // Use system Chrome if available
+      timeout: 30000 // 30 second timeout for launch
     });
 
     console.log(`✅ Puppeteer launched in ${Date.now() - startTime}ms`);
