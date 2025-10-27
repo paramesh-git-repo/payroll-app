@@ -375,14 +375,13 @@ router.get('/:id/pdf', protect, async (req, res) => {
     // Generate HTML for payslip
     const html = generatePayslipHTML(payslip);
 
-    // Launch puppeteer with timeout and optimized settings
-    console.log('🚀 Launching Puppeteer...');
-    const startTime = Date.now();
-    
     // Get executable path from environment or use fallback for Render
     const executablePath = process.env.PUPPETEER_EXECUTABLE_PATH ||
       (puppeteer.executablePath ? puppeteer.executablePath() : undefined) ||
       '/opt/render/.cache/puppeteer/chrome/linux-141.0.7390.122/chrome';
+    
+    console.log('🚀 Launching Puppeteer...');
+    console.log('Executable path:', executablePath || 'using default');
     
     browser = await puppeteer.launch({
       headless: true,
@@ -393,47 +392,38 @@ router.get('/:id/pdf', protect, async (req, res) => {
         '--single-process',
         '--no-zygote'
       ],
-      timeout: 30000, // 30 second timeout for launch
+      timeout: 30000,
       executablePath: executablePath
     });
 
-    console.log(`✅ Puppeteer launched in ${Date.now() - startTime}ms`);
+    console.log('✅ Puppeteer launched successfully');
 
     const page = await browser.newPage();
+    await page.setContent(html, { waitUntil: 'domcontentloaded' });
     
-    // Set content with timeout
-    await Promise.race([
-      page.setContent(html, { waitUntil: 'domcontentloaded' }),
-      new Promise((_, reject) => setTimeout(() => reject(new Error('Content load timeout')), 15000))
-    ]);
-
     console.log('✅ Content loaded, generating PDF...');
 
-    // Generate PDF with timeout
-    const pdf = await Promise.race([
-      page.pdf({
-        format: 'A4',
-        printBackground: true,
-        margin: {
-          top: '20px',
-          right: '20px',
-          bottom: '20px',
-          left: '20px'
-        }
-      }),
-      new Promise((_, reject) => setTimeout(() => reject(new Error('PDF generation timeout')), 15000))
-    ]);
+    const pdfBuffer = await page.pdf({
+      format: 'A4',
+      printBackground: true,
+      margin: {
+        top: '20px',
+        right: '20px',
+        bottom: '20px',
+        left: '20px'
+      }
+    });
 
     console.log('✅ PDF generated successfully');
     await browser.close();
 
-    // Set response headers
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', `attachment; filename="payslip-${payslip.employeeCode}-${payslip.month}-${payslip.year}.pdf"`);
-
-    res.send(pdf);
+    res.send(pdfBuffer);
   } catch (error) {
     console.error('❌ Generate PDF error:', error);
+    console.error('Error details:', error.message);
+    console.error('Error stack:', error.stack);
     
     // Clean up browser if it was opened
     if (browser) {
@@ -447,7 +437,8 @@ router.get('/:id/pdf', protect, async (req, res) => {
     res.status(500).json({
       success: false,
       message: error.message || 'Failed to generate PDF. Please try again.',
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+      error: error.message,
+      details: process.env.NODE_ENV === 'development' ? error.stack : undefined
     });
   }
 });
