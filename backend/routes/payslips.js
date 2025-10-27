@@ -379,6 +379,9 @@ router.get('/:id/pdf', protect, async (req, res) => {
     console.log('🚀 Launching Puppeteer...');
     const startTime = Date.now();
     
+    // Get executable path from environment or use default
+    const executablePath = process.env.PUPPETEER_EXECUTABLE_PATH || undefined;
+    
     browser = await puppeteer.launch({
       headless: true,
       args: [
@@ -388,7 +391,8 @@ router.get('/:id/pdf', protect, async (req, res) => {
         '--single-process',
         '--no-zygote'
       ],
-      timeout: 30000 // 30 second timeout for launch
+      timeout: 30000, // 30 second timeout for launch
+      executablePath: executablePath
     });
 
     console.log(`✅ Puppeteer launched in ${Date.now() - startTime}ms`);
