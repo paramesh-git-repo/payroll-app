@@ -16,8 +16,10 @@ const allowedOrigin = process.env.NODE_ENV === 'production'
 const corsOptions = {
   origin: allowedOrigin,
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  exposedHeaders: ['Content-Length', 'X-Content-Length'],
+  maxAge: 86400 // 24 hours
 };
 
 // Apply CORS
