@@ -465,8 +465,16 @@ router.post('/:id/send-email', protect, authorize('admin'), async (req, res) => 
       });
     }
 
-    // Send email
-    const emailResult = await sendPayslipEmail(payslip.employee, payslip);
+    // Create a promise with timeout (30 seconds)
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => reject(new Error('Email sending timeout after 30 seconds')), 30000);
+    });
+
+    // Send email with timeout
+    const emailResult = await Promise.race([
+      sendPayslipEmail(payslip.employee, payslip),
+      timeoutPromise
+    ]);
     
     // Update payslip with email status (allow multiple sends)
     payslip.emailSent = emailResult.success;
