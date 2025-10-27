@@ -348,6 +348,7 @@ router.get('/:id', protect, async (req, res) => {
 // @route   GET /api/payslips/:id/pdf
 // @access  Private
 router.get('/:id/pdf', protect, async (req, res) => {
+  let browser;
   try {
     const payslip = await Payslip.findById(req.params.id)
       .populate('employee', 'name employeeCode email department designation')
@@ -374,27 +375,51 @@ router.get('/:id/pdf', protect, async (req, res) => {
     // Generate HTML for payslip
     const html = generatePayslipHTML(payslip);
 
-    // Launch puppeteer
-    const browser = await puppeteer.launch({
+    // Launch puppeteer with timeout and optimized settings
+    console.log('🚀 Launching Puppeteer...');
+    const startTime = Date.now();
+    
+    browser = await puppeteer.launch({
       headless: true,
-      args: ['--no-sandbox', '--disable-setuid-sandbox']
+      args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage',
+        '--disable-accelerated-2d-canvas',
+        '--disable-gpu'
+      ],
+      timeout: 30000, // 30 second timeout for launch
+      executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined // Use system Chrome if available
     });
+
+    console.log(`✅ Puppeteer launched in ${Date.now() - startTime}ms`);
 
     const page = await browser.newPage();
-    await page.setContent(html, { waitUntil: 'networkidle0' });
+    
+    // Set content with timeout
+    await Promise.race([
+      page.setContent(html, { waitUntil: 'domcontentloaded' }),
+      new Promise((_, reject) => setTimeout(() => reject(new Error('Content load timeout')), 15000))
+    ]);
 
-    // Generate PDF
-    const pdf = await page.pdf({
-      format: 'A4',
-      printBackground: true,
-      margin: {
-        top: '20px',
-        right: '20px',
-        bottom: '20px',
-        left: '20px'
-      }
-    });
+    console.log('✅ Content loaded, generating PDF...');
 
+    // Generate PDF with timeout
+    const pdf = await Promise.race([
+      page.pdf({
+        format: 'A4',
+        printBackground: true,
+        margin: {
+          top: '20px',
+          right: '20px',
+          bottom: '20px',
+          left: '20px'
+        }
+      }),
+      new Promise((_, reject) => setTimeout(() => reject(new Error('PDF generation timeout')), 15000))
+    ]);
+
+    console.log('✅ PDF generated successfully');
     await browser.close();
 
     // Set response headers
@@ -403,10 +428,21 @@ router.get('/:id/pdf', protect, async (req, res) => {
 
     res.send(pdf);
   } catch (error) {
-    console.error('Generate PDF error:', error);
+    console.error('❌ Generate PDF error:', error);
+    
+    // Clean up browser if it was opened
+    if (browser) {
+      try {
+        await browser.close();
+      } catch (e) {
+        console.error('Browser close error:', e);
+      }
+    }
+    
     res.status(500).json({
       success: false,
-      message: 'Server error'
+      message: error.message || 'Failed to generate PDF. Please try again.',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
