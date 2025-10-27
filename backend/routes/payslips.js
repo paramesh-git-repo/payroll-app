@@ -17,8 +17,12 @@ router.post('/generate', protect, authorize('admin'), [
   body('year').isInt({ min: 2020, max: 2030 }).withMessage('Year must be between 2020 and 2030')
 ], async (req, res) => {
   try {
+    console.log('📥 Incoming payslip request:', req.body);
+    console.log('📥 User making request:', req.user ? req.user.id : 'No user');
+    
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
+      console.error('❌ Validation errors:', errors.array());
       return res.status(400).json({
         success: false,
         message: 'Validation errors',
@@ -27,6 +31,7 @@ router.post('/generate', protect, authorize('admin'), [
     }
 
     const { employeeId, month, year } = req.body;
+    console.log('📥 Parsed request data:', { employeeId, month, year });
 
     // Check if employee exists
     const employee = await Employee.findById(employeeId);
@@ -51,8 +56,8 @@ router.post('/generate', protect, authorize('admin'), [
       });
     }
 
-    // Create payslip
-    const payslip = await Payslip.create({
+    // Prepare payslip data
+    const payslipData = {
       employee: employeeId,
       employeeCode: employee.employeeCode,
       employeeName: employee.name,
@@ -72,7 +77,14 @@ router.post('/generate', protect, authorize('admin'), [
       department: employee.department,
       designation: employee.designation,
       generatedBy: req.user.id
-    });
+    };
+    
+    console.log('📋 Creating payslip with data:', payslipData);
+
+    // Create payslip
+    const payslip = await Payslip.create(payslipData);
+    
+    console.log('✅ Payslip created successfully:', payslip._id);
 
     // Send email if requested
     let emailResult = null;
@@ -102,11 +114,24 @@ router.post('/generate', protect, authorize('admin'), [
       emailError: emailResult && !emailResult.success ? emailResult.error : null
     });
   } catch (error) {
-    console.error('Generate payslip error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Server error'
-    });
+    console.error('❌ Generate payslip error:', error);
+    console.error('❌ Error message:', error.message);
+    console.error('❌ Error stack:', error.stack);
+    
+    if (error.name === 'ValidationError') {
+      console.error('❌ Validation details:', error.errors);
+      res.status(400).json({
+        success: false,
+        message: error.message,
+        errors: error.errors
+      });
+    } else {
+      res.status(500).json({
+        success: false,
+        message: error.message || 'Server error',
+        stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      });
+    }
   }
 });
 
