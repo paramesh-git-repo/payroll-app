@@ -2,11 +2,37 @@ const nodemailer = require('nodemailer');
 
 const {
   GMAIL_USER,
-  GMAIL_PASS
+  GMAIL_PASS,
+  SENDGRID_API_KEY,
+  EMAIL_PROVIDER
 } = process.env;
 
+// Get the appropriate transporter based on EMAIL_PROVIDER env variable
+async function getTransporter() {
+  const provider = EMAIL_PROVIDER || 'gmail'; // Default to Gmail
+
+  if (provider === 'sendgrid') {
+    return getSendGridTransporter();
+  } else {
+    return getGmailTransporter();
+  }
+}
+
+// SendGrid configuration (Recommended for Production)
+function getSendGridTransporter() {
+  return nodemailer.createTransport({
+    host: 'smtp.sendgrid.net',
+    port: 587,
+    secure: false, // true for 465, false for other ports
+    auth: {
+      user: 'apikey', // SendGrid fixed user
+      pass: SENDGRID_API_KEY
+    }
+  });
+}
+
 // Gmail App Password configuration
-async function getGmailTransporter() {
+function getGmailTransporter() {
   return nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -306,10 +332,22 @@ const emailTemplates = {
 // Send email function
 const sendEmail = async (to, subject, html, text, attachments = []) => {
   try {
-    const transporter = await getGmailTransporter();
+    const transporter = await getTransporter();
+    
+    // Determine the from address based on provider
+    const provider = EMAIL_PROVIDER || 'gmail';
+    let fromAddress;
+    
+    if (provider === 'sendgrid') {
+      // SendGrid requires verified sender email
+      fromAddress = `"${process.env.EMAIL_FROM_NAME || 'AXESS & V-ACCEL Payroll System'}" <${process.env.SENDGRID_FROM_EMAIL || GMAIL_USER}>`;
+    } else {
+      // Gmail
+      fromAddress = `"${process.env.EMAIL_FROM_NAME || 'AXESS & V-ACCEL Payroll System'}" <${GMAIL_USER}>`;
+    }
     
     const mailOptions = {
-      from: `"${process.env.EMAIL_FROM_NAME || 'AXESS & V-ACCEL Payroll System'}" <${GMAIL_USER}>`,
+      from: fromAddress,
       to: to,
       subject: subject,
       html: html,
@@ -319,14 +357,14 @@ const sendEmail = async (to, subject, html, text, attachments = []) => {
     };
 
     const result = await transporter.sendMail(mailOptions);
-    console.log('Email sent successfully:', result.messageId);
+    console.log('✅ Email sent successfully via', provider, ':', result.messageId);
     return {
       success: true,
       messageId: result.messageId,
       response: result.response
     };
   } catch (error) {
-    console.error('Email sending failed:', error);
+    console.error('❌ Email sending failed:', error);
     return {
       success: false,
       error: error.message
@@ -367,7 +405,9 @@ const sendPayslipEmail = async (employee, payslip, isBulk = false) => {
 };
 
 module.exports = {
+  getTransporter,
   getGmailTransporter,
+  getSendGridTransporter,
   sendEmail,
   sendPayslipEmail,
   emailTemplates
