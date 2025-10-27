@@ -380,7 +380,9 @@ router.get('/:id/pdf', protect, async (req, res) => {
     const startTime = Date.now();
     
     // Get executable path from environment or use fallback for Render
-    const executablePath = process.env.PUPPETEER_EXECUTABLE_PATH || undefined;
+    const executablePath = process.env.PUPPETEER_EXECUTABLE_PATH ||
+      (puppeteer.executablePath ? puppeteer.executablePath() : undefined) ||
+      '/opt/render/.cache/puppeteer/chrome/linux-141.0.7390.122/chrome';
     
     browser = await puppeteer.launch({
       headless: true,
@@ -392,7 +394,7 @@ router.get('/:id/pdf', protect, async (req, res) => {
         '--no-zygote'
       ],
       timeout: 30000, // 30 second timeout for launch
-      executablePath: executablePath // Will use bundled Chromium if not set
+      executablePath: executablePath
     });
 
     console.log(`✅ Puppeteer launched in ${Date.now() - startTime}ms`);
