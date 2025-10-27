@@ -389,8 +389,7 @@ router.get('/:id/pdf', protect, async (req, res) => {
         '--no-sandbox',
         '--disable-setuid-sandbox',
         '--disable-dev-shm-usage',
-        '--single-process',
-        '--no-zygote'
+        '--disable-gpu'
       ],
       timeout: 30000,
       executablePath: executablePath
