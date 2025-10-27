@@ -403,7 +403,7 @@ router.get('/:id/pdf', protect, async (req, res) => {
     // Get executable path from environment or use fallback for Render
     const executablePath = process.env.PUPPETEER_EXECUTABLE_PATH ||
       (puppeteer.executablePath ? puppeteer.executablePath() : undefined) ||
-      '/opt/render/.cache/puppeteer/chrome/linux-141.0.7390.122/chrome';
+      '/opt/render/.cache/puppeteer/chrome/linux-141.0.7390.122/chrome-linux64/chrome';
     
     console.log('🚀 Launching Puppeteer...');
     console.log('Executable path:', executablePath || 'using default');
