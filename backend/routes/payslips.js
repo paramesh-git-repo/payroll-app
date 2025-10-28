@@ -452,7 +452,7 @@ router.get('/:id/pdf', protect, async (req, res) => {
       success: false,
       message: error.message || 'Failed to generate PDF. Please try again.',
       error: error.message,
-      details: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      stack: error.stack
     });
   }
 });
@@ -923,5 +923,49 @@ function generatePayslipHTML(payslip) {
     </html>
   `;
 }
+
+// Test route for Puppeteer debugging
+router.get('/test-puppeteer', async (req, res) => {
+  let browser;
+  try {
+    console.log('🧪 Testing Puppeteer...');
+    
+    browser = await puppeteer.launch({
+      headless: true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox']
+    });
+    
+    console.log('✅ Puppeteer launched successfully');
+    
+    const page = await browser.newPage();
+    await page.goto('https://example.com', { waitUntil: 'domcontentloaded' });
+    const title = await page.title();
+    
+    await browser.close();
+    
+    res.json({
+      success: true,
+      message: 'Puppeteer is working!',
+      title: title,
+      puppeteerVersion: require('puppeteer/package.json').version
+    });
+  } catch (error) {
+    console.error('❌ Puppeteer test failed:', error);
+    if (browser) {
+      try {
+        await browser.close();
+      } catch (e) {
+        console.error('Browser close error:', e);
+      }
+    }
+    
+    res.status(500).json({
+      success: false,
+      message: 'Puppeteer test failed',
+      error: error.message,
+      stack: error.stack
+    });
+  }
+});
 
 module.exports = router;
