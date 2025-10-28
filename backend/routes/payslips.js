@@ -8,6 +8,55 @@ const { sendPayslipEmail } = require('../config/email');
 
 const router = express.Router();
 
+// Test route for Puppeteer debugging (must be before /:id routes!)
+router.get('/test-puppeteer', async (req, res) => {
+  let browser;
+  try {
+    console.log('🧪 Testing Puppeteer...');
+    
+    // Try to get Puppeteer's default Chromium path
+    const chromiumPath = process.env.CHROMIUM_PATH || puppeteer.executablePath();
+    console.log('📍 Chromium path:', chromiumPath || 'default');
+    
+    browser = await puppeteer.launch({
+      headless: true,
+      executablePath: chromiumPath,
+      args: ['--no-sandbox', '--disable-setuid-sandbox']
+    });
+    
+    console.log('✅ Puppeteer launched successfully');
+    
+    const page = await browser.newPage();
+    await page.goto('https://example.com', { waitUntil: 'domcontentloaded' });
+    const title = await page.title();
+    
+    await browser.close();
+    
+    res.json({
+      success: true,
+      message: 'Puppeteer is working!',
+      title: title,
+      puppeteerVersion: require('puppeteer/package.json').version
+    });
+  } catch (error) {
+    console.error('❌ Puppeteer test failed:', error);
+    if (browser) {
+      try {
+        await browser.close();
+      } catch (e) {
+        console.error('Browser close error:', e);
+      }
+    }
+    
+    res.status(500).json({
+      success: false,
+      message: 'Puppeteer test failed',
+      error: error.message,
+      stack: error.stack
+    });
+  }
+});
+
 // @desc    Generate payslip
 // @route   POST /api/payslips/generate
 // @access  Private/Admin
@@ -928,54 +977,5 @@ function generatePayslipHTML(payslip) {
     </html>
   `;
 }
-
-// Test route for Puppeteer debugging
-router.get('/test-puppeteer', async (req, res) => {
-  let browser;
-  try {
-    console.log('🧪 Testing Puppeteer...');
-    
-    // Try to get Puppeteer's default Chromium path
-    const chromiumPath = process.env.CHROMIUM_PATH || puppeteer.executablePath();
-    console.log('📍 Chromium path:', chromiumPath || 'default');
-    
-    browser = await puppeteer.launch({
-      headless: true,
-      executablePath: chromiumPath,
-      args: ['--no-sandbox', '--disable-setuid-sandbox']
-    });
-    
-    console.log('✅ Puppeteer launched successfully');
-    
-    const page = await browser.newPage();
-    await page.goto('https://example.com', { waitUntil: 'domcontentloaded' });
-    const title = await page.title();
-    
-    await browser.close();
-    
-    res.json({
-      success: true,
-      message: 'Puppeteer is working!',
-      title: title,
-      puppeteerVersion: require('puppeteer/package.json').version
-    });
-  } catch (error) {
-    console.error('❌ Puppeteer test failed:', error);
-    if (browser) {
-      try {
-        await browser.close();
-      } catch (e) {
-        console.error('Browser close error:', e);
-      }
-    }
-    
-    res.status(500).json({
-      success: false,
-      message: 'Puppeteer test failed',
-      error: error.message,
-      stack: error.stack
-    });
-  }
-});
 
 module.exports = router;
