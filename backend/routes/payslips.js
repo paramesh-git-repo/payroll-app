@@ -402,8 +402,13 @@ router.get('/:id/pdf', protect, async (req, res) => {
 
     console.log('🚀 Launching Puppeteer...');
     
+    // Try to get Puppeteer's default Chromium path
+    const chromiumPath = process.env.CHROMIUM_PATH || puppeteer.executablePath();
+    console.log('📍 Chromium path:', chromiumPath || 'default');
+    
     browser = await puppeteer.launch({
       headless: true,
+      executablePath: chromiumPath,
       args: [
         '--no-sandbox',
         '--disable-setuid-sandbox'
@@ -930,8 +935,13 @@ router.get('/test-puppeteer', async (req, res) => {
   try {
     console.log('🧪 Testing Puppeteer...');
     
+    // Try to get Puppeteer's default Chromium path
+    const chromiumPath = process.env.CHROMIUM_PATH || puppeteer.executablePath();
+    console.log('📍 Chromium path:', chromiumPath || 'default');
+    
     browser = await puppeteer.launch({
       headless: true,
+      executablePath: chromiumPath,
       args: ['--no-sandbox', '--disable-setuid-sandbox']
     });
     
