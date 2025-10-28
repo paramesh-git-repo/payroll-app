@@ -38,6 +38,7 @@ RUN apt-get update && apt-get install -y \
   libxtst6 \
   lsb-release \
   xdg-utils \
+  chromium \
   --no-install-recommends && rm -rf /var/lib/apt/lists/*
 
 # Set working directory
@@ -58,7 +59,8 @@ COPY . .
 # Set environment
 ENV NODE_ENV=production
 ENV PORT=5001
-ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome-stable
+ENV CHROMIUM_PATH=/usr/bin/chromium
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 
 # Expose app port
 EXPOSE 5001
